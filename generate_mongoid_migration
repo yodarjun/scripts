@@ -1,0 +1,48 @@
+#!/usr/bin/ruby
+
+class GenerateMongoidMigration
+  def initialize
+    @destination_file_name = ""
+    @migration_class_name = ""
+  end
+
+  def file_name_with_time_stamp(migration_name)
+    time = Time.now.strftime("%Y%m%d%H%M%S")
+    "#{time}_#{migration_name}.rb"
+  end
+
+  def set_variables(options_array)
+    migration_name = options_array.first
+    @migration_class_name = camel_case(migration_name)
+    @destination_file_name = file_name_with_time_stamp(migration_name)
+  end
+
+  def camel_case(string)
+    string.split("_").map(&:capitalize).join("")
+  end
+
+  def write_file
+    migration_file = File.new("db/mongoid_migrate/#{@destination_file_name}", "w+")
+    migration_file.puts migration_file_content
+    migration_file.close
+  end
+
+  def migration_file_content
+"class #{@migration_class_name} < Mongoid::Migration
+  def self.up
+  end
+
+  def self.down
+  end
+end"
+  end
+
+  def run
+    set_variables ARGV
+    write_file
+  end
+
+  if __FILE__ == $0
+    GenerateMongoidMigration.new.run
+  end
+end
