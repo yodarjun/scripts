@@ -22,7 +22,7 @@ class GenerateMongoidMigration
   end
 
   def write_file
-    puts "generating file: #{@destination_file_name}"
+    puts "generating file: db/mongoid_migrate/#{@destination_file_name}"
     migration_file = File.new("db/mongoid_migrate/#{@destination_file_name}", "w+")
     migration_file.puts migration_file_content
     migration_file.close
